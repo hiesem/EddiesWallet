@@ -551,4 +551,21 @@ Before opening a feature PR, the implementer should be able to answer:
 - Is the behavior safe for the selected Android-first scope and later portable Linux/API contract?
 - If production data is involved, which production gate above has been evidenced?
 
-No application implementation, cloud account, VPS provisioning, OAuth client, DNS record, production credential, or real family data is part of this repository-shaping task.
+No backend implementation, cloud account, VPS provisioning, OAuth client, DNS record, production credential, or real family data is part of this repository-shaping task.
+
+## Android app
+
+The native Android app now lives in `app/` and uses Kotlin, Jetpack Compose, and Material 3. It is a local synthetic demo only: `LocalWalletRepository` owns an in-memory confirmed snapshot, immutable events, parent pending queue, child last-confirmed snapshot, pairing/revocation, and representative online/offline/rejected states. `WalletApiClient` is the explicit seam for a later API client; no backend or sign-in dependency is bundled.
+
+Open the repository root in Android Studio and run the `app` configuration on an Android phone or tablet. From a machine with the Android SDK and Gradle installed, run:
+
+```bash
+./gradlew test
+# Optional device/emulator checks:
+./gradlew connectedAndroidTest
+./gradlew :app:assembleDebug
+```
+
+The debug APK is produced at `app/build/outputs/apk/debug/app-debug.apk`. The app opens in Parent view; use the Parent/Eddie view switcher to inspect both roles. Parent flow is Dashboard → Record something → Preview and confirm → Confirm record → Activity. Use Sync now to make a pending local record confirmed and visible to Eddie. Toggle Wi-Fi pills to inspect offline/last-confirmed behavior, use the tablet management card to revoke/re-pair, and use an over-large spending amount to see a rejected validation. Eddie view intentionally has no write controls.
+
+Focused behavior tests are in `app/src/test` and Compose boundary/journey tests are in `app/src/androidTest`.

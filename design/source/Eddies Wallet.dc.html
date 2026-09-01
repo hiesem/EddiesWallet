@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: oklch(0.955 0.016 80); }
+  a { color: oklch(0.55 0.13 55); text-decoration: none; }
+  a:hover { color: oklch(0.45 0.13 55); }
+  * { box-sizing: border-box; }
+  @keyframes ew-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+  @keyframes ew-pop { 0% { transform: scale(0.94); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
+</style>
+</helmet>
+
+<div style="padding: 36px 40px 56px; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: oklch(0.28 0.02 60); background: oklch(0.955 0.016 80); min-height: 100%;">
+
+  <div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; max-width: 980px; margin: 0 auto 26px;">
+    <div>
+      <div style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 34px; letter-spacing: -0.5px;">Eddie's Wallet</div>
+      <div style="font-size: 15px; color: oklch(0.53 0.02 70); margin-top: 4px; max-width: 520px; text-wrap: pretty;">Virtual allowance credits, recorded by a parent and read by a kid. Android prototype — parent writes, tablet reads.</div>
+    </div>
+    <div style="display: flex; gap: 8px; align-items: center; flex: none;">
+      <span style="font-size: 12px; padding: 6px 10px; border-radius: 999px; background: oklch(0.94 0.045 180); color: oklch(0.42 0.09 180); font-weight: 600; white-space: nowrap;">Confirmed</span>
+      <span style="font-size: 12px; padding: 6px 10px; border-radius: 999px; background: oklch(0.99 0.004 85); border: 1px dashed oklch(0.75 0.02 80); color: oklch(0.53 0.02 70); font-weight: 600; white-space: nowrap;">Pending sync</span>
+      <span style="font-size: 12px; padding: 6px 10px; border-radius: 999px; background: oklch(0.94 0.045 70); color: oklch(0.46 0.12 55); font-weight: 600; white-space: nowrap;">Offline</span>
+    </div>
+  </div>
+
+  <div style="display: flex; gap: 44px; justify-content: center; align-items: flex-start; flex-wrap: wrap;">
+
+    <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-weight: 700; font-size: 15px;">Parent phone</span>
+        <span style="font-size: 13px; color: oklch(0.53 0.02 70);">writes every record</span>
+      </div>
+
+      <x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" hint-size="428px,908px">
+        <div style="min-height: 100%; display: flex; flex-direction: column; background: oklch(0.985 0.008 85); font-family: 'IBM Plex Sans', system-ui, sans-serif; color: oklch(0.28 0.02 60);">
+
+          <div style="display: flex; align-items: center; gap: 12px; padding: 14px 18px 12px;">
+            <div style="width: 38px; height: 38px; border-radius: 50%; background: oklch(0.68 0.15 55); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px;">M</div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-weight: 600; font-size: 15px;">Family space</div>
+              <div style="font-size: 12px; color: oklch(0.53 0.02 70);">Parent — you record, {{ childName }} reads</div>
+            </div>
+            <button onClick="{{ toggleOnline }}" style="border: 1px solid oklch(0.89 0.012 80); background: {{ netBg }}; color: {{ netFg }}; font-family: inherit; font-size: 12px; font-weight: 600; padding: 7px 11px; border-radius: 999px; cursor: pointer; white-space: nowrap;">{{ netLabel }}</button>
+          </div>
+
+          <sc-if value="{{ pIsDash }}" hint-placeholder-val="{{ true }}">
+            <div style="padding: 0 18px 26px; display: flex; flex-direction: column; gap: 14px;">
+
+              <div style="border: 1px solid oklch(0.89 0.012 80); border-radius: 14px; padding: 11px 13px; font-size: 12.5px; color: oklch(0.53 0.02 70); line-height: 1.45; text-wrap: pretty;">Virtual credits only — a practice record of allowance. No bank account, no card, nothing moves out of a real wallet.</div>
+
+              <div style="background: oklch(0.99 0.004 85); border: 1px solid oklch(0.89 0.012 80); border-radius: 22px; padding: 20px; box-shadow: 0 1px 0 oklch(0.92 0.012 80);">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-size: 12.5px; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase; color: oklch(0.53 0.02 70);">Balance</span>
+                  <span style="font-size: 11.5px; font-weight: 600; padding: 5px 9px; border-radius: 999px; background: {{ syncBg }}; color: {{ syncFg }}; border: 1px {{ syncBorder }} {{ syncLine }};">{{ syncLabel }}</span>
+                </div>
+                <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 8px;">
+                  <span style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 46px; line-height: 1;">{{ pBalance }}</span>
+                  <span style="font-size: 15px; color: oklch(0.53 0.02 70); font-weight: 600;">{{ unitLabel }}</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 18px;">
+                  <div style="background: oklch(0.96 0.035 70); border-radius: 14px; padding: 11px 12px;">
+                    <div style="font-size: 11.5px; color: oklch(0.46 0.09 55); font-weight: 600;">Spending Jar</div>
+                    <div style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 22px; margin-top: 3px;">{{ pSpending }}</div>
+                  </div>
+                  <div style="background: oklch(0.96 0.035 180); border-radius: 14px; padding: 11px 12px;">
+                    <div style="font-size: 11.5px; color: oklch(0.42 0.09 180); font-weight: 600;">Save Jar</div>
+                    <div style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 22px; margin-top: 3px;">{{ pSave }}</div>
+                  </div>
+                  <div style="border: 1px solid oklch(0.85 0.015 80); border-radius: 14px; padding: 11px 12px;">
+                    <div style="font-size: 11.5px; color: oklch(0.53 0.02 70); font-weight: 600;">Owed</div>
+                    <div style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 22px; margin-top: 3px;">{{ pOwed }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <sc-if value="{{ hasPending }}" hint-placeholder-val="{{ false }}">
+                <div style="border: 1px dashed oklch(0.75 0.02 80); background: oklch(0.99 0.004 85); border-radius: 18px; padding: 14px 15px; display: flex; gap: 12px; align-items: center;">
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="font-weight: 600; font-size: 14px;">{{ pendingLabel }}</div>
+                    <div style="font-size: 12.5px; color: oklch(0.53 0.02 70); margin-top: 2px; text-wrap: pretty;">Saved on this phone. {{ childName }} won't see it until the server confirms it.</div>
+                  </div>
+                  <button onClick="{{ retrySync }}" style="border: none; background: oklch(0.28 0.02 60); color: oklch(0.98 0.008 85); font-family: inherit; font-size: 13px; font-weight: 600; padding: 10px 14px; border-radius: 12px; cursor: pointer; white-space: nowrap;">{{ retryLabel }}</button>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ askSent }}" hint-placeholder-val="{{ false }}">
+                <div style="background: oklch(0.96 0.035 70); border-radius: 18px; padding: 14px 15px; display: flex; gap: 12px; align-items: center;">
+                  <div style="flex: 1; min-width: 0;">
+                    <div style="font-weight: 600; font-size: 14px;">{{ childName }} asked you to look at something</div>
+                    <div style="font-size: 12.5px; color: oklch(0.46 0.09 55); margin-top: 2px;">Tap Activity to check the last records.</div>
+                  </div>
+                  <button onClick="{{ clearAsk }}" style="border: 1px solid oklch(0.8 0.05 60); background: transparent; color: oklch(0.46 0.09 55); font-family: inherit; font-size: 13px; font-weight: 600; padding: 9px 12px; border-radius: 12px; cursor: pointer;">Seen</button>
+                </div>
+              </sc-if>
+
+              <button onClick="{{ goRecord }}" style="border: none; background: oklch(0.68 0.15 55); color: #fff; font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 800; padding: 17px; border-radius: 18px; cursor: pointer; box-shadow: 0 6px 14px oklch(0.68 0.15 55 / 0.28);" style-hover="background: oklch(0.62 0.15 55);">Record something</button>
+
+              <div style="display: flex; flex-direction: column; gap: 1px; background: oklch(0.89 0.012 80); border-radius: 18px; overflow: hidden; border: 1px solid oklch(0.89 0.012 80);">
+                <button onClick="{{ goAllowance }}" style="border: none; background: oklch(0.99 0.004 85); font-family: inherit; text-align: left; padding: 15px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px;" style-hover="background: oklch(0.97 0.01 85);">
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 14.5px; color: oklch(0.28 0.02 60);">Allowance rule</div>
+                    <div style="font-size: 12.5px; color: oklch(0.53 0.02 70); margin-top: 2px;">8 {{ unitLabel }} every Sunday — you confirm each one</div>
+                  </div>
+                  <span style="font-size: 12.5px; font-weight: 600; color: oklch(0.55 0.13 55);">Preview</span>
+                </button>
+                <button onClick="{{ goActivity }}" style="border: none; background: oklch(0.99 0.004 85); font-family: inherit; text-align: left; padding: 15px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px;" style-hover="background: oklch(0.97 0.01 85);">
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 14.5px; color: oklch(0.28 0.02 60);">Activity</div>
+                    <div style="font-size: 12.5px; color: oklch(0.53 0.02 70); margin-top: 2px;">{{ eventCount }} records — none can be edited or deleted</div>
+                  </div>
+                  <span style="font-size: 12.5px; font-weight: 600; color: oklch(0.55 0.13 55);">Open</span>
+                </button>
+                <button onClick="{{ goPair }}" style="border: none; background: oklch(0.99 0.004 85); font-family: inherit; text-align: left; padding: 15px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px;" style-hover="background: oklch(0.97 0.01 85);">
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 14.5px; color: oklch(0.28 0.02 60);">{{ childName }}'s tablet</div>
+                    <div style="font-size: 12.5px; color: oklch(0.53 0.02 70); margin-top: 2px;">{{ deviceLine }}</div>
+                  </div>
+                  <span style="font-size: 12.5px; font-weight: 600; color: oklch(0.55 0.13 55);">Manage</span>
+                </button>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ pIsRecord }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 0 18px 26px; display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <button onClick="{{ goDash }}" style="border: 1px solid oklch(0.89 0.012 80); background: oklch(0.99 0.004 85); font-family: inherit; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 999px; cursor: pointer; color: oklch(0.28 0.02 60);">Back</button>
+                <div style="font-weight: 700; font-size: 16px;">Record a virtual event</div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;">
+                <span style="padding: 6px 11px; border-radius: 999px; background: oklch(0.28 0.02 60); color: oklch(0.98 0.008 85);">1 Amount</span>
+                <span style="color: oklch(0.75 0.02 80);">›</span>
+                <span style="padding: 6px 11px; border-radius: 999px; border: 1px solid oklch(0.89 0.012 80); color: oklch(0.53 0.02 70);">2 Preview</span>
+                <span style="color: oklch(0.75 0.02 80);">›</span>
+                <span style="padding: 6px 11px; border-radius: 999px; border: 1px solid oklch(0.89 0.012 80); color: oklch(0.53 0.02 70);">3 Confirm</span>
+              </div>
+
+              <div>
+                <div style="font-size: 12.5px; font-weight: 600; color: oklch(0.53 0.02 70); margin-bottom: 8px;">What happened?</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                  <sc-for list="{{ kinds }}" as="k" hint-placeholder-count="6">
+                    <button onClick="{{ k.onPick }}" style="border: 1px solid {{ k.line }}; background: {{ k.bg }}; color: {{ k.fg }}; font-family: inherit; font-size: 13px; font-weight: 600; padding: 13px 8px; border-radius: 14px; cursor: pointer; min-height: 54px; line-height: 1.25;">{{ k.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="background: oklch(0.99 0.004 85); border: 1px solid oklch(0.89 0.012 80); border-radius: 20px; padding: 18px;">
+                <div style="font-size: 12.5px; font-weight: 600; color: oklch(0.53 0.02 70);">How many {{ unitLabel }}?</div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px;">
+                  <button onClick="{{ dec }}" style="width: 52px; height: 52px; border-radius: 50%; border: 1px solid oklch(0.89 0.012 80); background: oklch(0.985 0.008 85); font-size: 24px; font-family: inherit; color: oklch(0.28 0.02 60); cursor: pointer;">–</button>
+                  <div style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 44px; line-height: 1;">{{ draftAmount }}</div>
+                  <button onClick="{{ inc }}" style="width: 52px; height: 52px; border-radius: 50%; border: 1px solid oklch(0.89 0.012 80); background: oklch(0.985 0.008 85); font-size: 24px; font-family: inherit; color: oklch(0.28 0.02 60); cursor: pointer;">+</button>
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 14px;">
+                  <sc-for list="{{ amountChips }}" as="a" hint-placeholder-count="4">
+                    <button onClick="{{ a.onPick }}" style="flex: 1; border: 1px solid {{ a.line }}; background: {{ a.bg }}; color: {{ a.fg }}; font-family: inherit; font-size: 14px; font-weight: 600; padding: 11px 0; border-radius: 12px; cursor: pointer;">{{ a.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div>
+                <div style="font-size: 12.5px; font-weight: 600; color: oklch(0.53 0.02 70); margin-bottom: 8px;">Reason {{ childName }} will read</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                  <sc-for list="{{ reasonChips }}" as="r" hint-placeholder-count="4">
+                    <button onClick="{{ r.onPick }}" style="border: 1px solid {{ r.line }}; background: {{ r.bg }}; color: {{ r.fg }}; font-family: inherit; font-size: 13px; font-weight: 500; padding: 10px 13px; border-radius: 999px; cursor: pointer;">{{ r.label }}</button>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="background: oklch(0.96 0.035 180); border-radius: 20px; padding: 16px 17px;">
+                <div style="font-size: 12.5px; font-weight: 700; color: oklch(0.42 0.09 180); letter-spacing: 0.3px; text-transform: uppercase;">After this record</div>
+                <div style="display: flex; flex-direction: column; gap: 7px; margin-top: 10px;">
+                  <sc-for list="{{ previewRows }}" as="p" hint-placeholder-count="2">
+                    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 14.5px;">
+                      <span style="color: oklch(0.35 0.04 180); font-weight: 500;">{{ p.label }}</span>
+                      <span style="font-family: 'Nunito', sans-serif; font-weight: 800;">{{ p.change }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <sc-if value="{{ hasReject }}" hint-placeholder-val="{{ false }}">
+                <div style="background: oklch(0.96 0.035 70); border: 1px solid oklch(0.82 0.06 60); border-radius: 18px; padding: 14px 15px;">
+                  <div style="font-weight: 700; font-size: 14px; color: oklch(0.46 0.12 55);">{{ rejectCode }}</div>
+                  <div style="font-size: 12.5px; color: oklch(0.46 0.09 55); margin-top: 3px; text-wrap: pretty;">{{ rejectText }}</div>
+                </div>
+              </sc-if>
+
+              <button onClick="{{ goConfirm }}" disabled="{{ confirmDisabled }}" style="border: none; background: {{ nextBg }}; color: #fff; font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 800; padding: 17px; border-radius: 18px; cursor: pointer;">Preview and confirm</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ pIsConfirm }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 0 18px 26px; display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <button onClick="{{ goRecord }}" style="border: 1px solid oklch(0.89 0.012 80); background: oklch(0.99 0.004 85); font-family: inherit; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 999px; cursor: pointer; color: oklch(0.28 0.02 60);">Back</button>
+                <div style="font-weight: 700; font-size: 16px;">Confirm this record</div>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;">
+                <span style="padding: 6px 11px; border-radius: 999px; border: 1px solid oklch(0.89 0.012 80); color: oklch(0.53 0.02 70);">1 Amount</span>
+                <span style="color: oklch(0.75 0.02 80);">›</span>
+                <span style="padding: 6px 11px; border-radius: 999px; border: 1px solid oklch(0.89 0.012 80); color: oklch(0.53 0.02 70);">2 Preview</span>
+                <span style="color: oklch(0.75 0.02 80);">›</span>
+                <span style="padding: 6px 11px; border-radius: 999px; background: oklch(0.28 0.02 60); color: oklch(0.98 0.008 85);">3 Confirm</span>
+              </div>
+
+              <div style="background: oklch(0.99 0.004 85); border: 1px solid oklch(0.89 0.012 80); border-radius: 22px; padding: 20px;">
+                <div style="font-size: 13px; color: oklch(0.53 0.02 70); font-weight: 600;">{{ draftKindLabel }}</div>
+                <div style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 38px; margin-top: 6px; line-height: 1;">{{ draftAmount }} {{ unitLabel }}</div>
+                <div style="font-size: 14.5px; margin-top: 8px;">{{ draftReason }}</div>
+                <div style="height: 1px; background: oklch(0.91 0.012 80); margin: 16px 0;"></div>
+                <div style="display: flex; flex-direction: column; gap: 7px;">
+                  <sc-for list="{{ previewRows }}" as="p" hint-placeholder-count="2">
+                    <div style="display: flex; align-items: baseline; justify-content: space-between; gap: 10px; font-size: 14.5px;">
+                      <span style="color: oklch(0.53 0.02 70); font-weight: 500;">{{ p.label }}</span>
+                      <span style="font-family: 'Nunito', sans-serif; font-weight: 800;">{{ p.change }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </div>
+
+              <div style="border: 1px solid oklch(0.89 0.012 80); border-radius: 18px; padding: 14px 15px;">
+                <div style="font-size: 12.5px; font-weight: 700; color: oklch(0.53 0.02 70); letter-spacing: 0.3px; text-transform: uppercase;">{{ childName }} will read</div>
+                <div style="font-family: 'Nunito', sans-serif; font-size: 15px; margin-top: 7px; line-height: 1.45; text-wrap: pretty;">{{ childPreviewLine }}</div>
+              </div>
+
+              <div style="font-size: 12.5px; color: oklch(0.53 0.02 70); line-height: 1.45; text-wrap: pretty;">This writes a virtual record that can't be edited or deleted. A mistake is fixed later with a reversal, and {{ childName }} sees both.</div>
+
+              <button onClick="{{ commit }}" style="border: none; background: oklch(0.68 0.15 55); color: #fff; font-family: 'Nunito', sans-serif; font-size: 17px; font-weight: 800; padding: 17px; border-radius: 18px; cursor: pointer; box-shadow: 0 6px 14px oklch(0.68 0.15 55 / 0.28);" style-hover="background: oklch(0.62 0.15 55);">Confirm record</button>
+              <button onClick="{{ goDash }}" style="border: none; background: transparent; color: oklch(0.53 0.02 70); font-family: inherit; font-size: 14px; font-weight: 600; padding: 6px; cursor: pointer;">Cancel</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ pIsActivity }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 0 18px 26px; display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <button onClick="{{ goDash }}" style="border: 1px solid oklch(0.89 0.012 80); background: oklch(0.99 0.004 85); font-family: inherit; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 999px; cursor: pointer; color: oklch(0.28 0.02 60);">Back</button>
+                <div style="font-weight: 700; font-size: 16px;">Activity</div>
+              </div>
+              <div style="font-size: 12.5px; color: oklch(0.53 0.02 70); line-height: 1.45; text-wrap: pretty;">Every record is kept. Fix a mistake with a reversal — the original stays visible to both of you.</div>
+
+              <div style="display: flex; flex-direction: column; gap: 10px;">
+                <sc-for list="{{ parentEvents }}" as="e" hint-placeholder-count="5">
+                  <div style="background: oklch(0.99 0.004 85); border: 1px {{ e.borderStyle }} {{ e.borderColor }}; border-radius: 18px; padding: 14px 15px;">
+                    <div style="display: flex; align-items: baseline; gap: 12px;">
+                      <div style="flex: 1; min-width: 0;">
+                        <div style="font-weight: 600; font-size: 14.5px;">{{ e.title }}</div>
+                        <div style="font-size: 12.5px; color: oklch(0.53 0.02 70); margin-top: 3px;">{{ e.sub }}</div>
+                      </div>
+                      <div style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 17px; color: {{ e.amountColor }};">{{ e.amountText }}</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px; margin-top: 11px;">
+                      <span style="font-size: 11.5px; font-weight: 600; padding: 5px 9px; border-radius: 999px; background: {{ e.chipBg }}; color: {{ e.chipFg }};">{{ e.statusText }}</span>
+                      <span style="font-size: 11.5px; color: oklch(0.6 0.02 75);">{{ e.when }}</span>
+                      <sc-if value="{{ e.canReverse }}" hint-placeholder-val="{{ false }}">
+                        <button onClick="{{ e.onReverse }}" style="margin-left: auto; border: 1px solid oklch(0.89 0.012 80); background: transparent; color: oklch(0.53 0.02 70); font-family: inherit; font-size: 12px; font-weight: 600; padding: 7px 11px; border-radius: 999px; cursor: pointer;">Reverse</button>
+                      </sc-if>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ pIsPair }}" hint-placeholder-val="{{ false }}">
+            <div style="padding: 0 18px 26px; display: flex; flex-direction: column; gap: 14px;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <button onClick="{{ goDash }}" style="border: 1px solid oklch(0.89 0.012 80); background: oklch(0.99 0.004 85); font-family: inherit; font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 999px; cursor: pointer; color: oklch(0.28 0.02 60);">Back</button>
+                <div style="font-weight: 700; font-size: 16px;">{{ childName }}'s tablet</div>
+              </div>
+
+              <div style="background: oklch(0.99 0.004 85); border: 1px solid oklch(0.89 0.012 80); border-radius: 22px; padding: 20px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 40px; height: 40px; border-radius: 12px; background: oklch(0.96 0.035 180);"></div>
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600; font-size: 15px;">Tablet in the kitchen</div>
+                    <div style="font-size: 12.5px; color: oklch(0.53 0.02 70); margin-top: 2px;">{{ deviceLine }}</div>
+                  </div>
+                </div>
+                <div style="height: 1px; background: oklch(0.91 0.012 80); margin: 16px 0;"></div>
+                <div style="font-size: 12.5px; color: oklch(0.53 0.02 70); line-height: 1.45; text-wrap: pretty;">This tablet can read {{ childName }}'s balance and activity. It can't record, change or remove anything — the server refuses writes from it.</div>
+                <sc-if value="{{ devicePaired }}" hint-placeholder-val="{{ true }}">
+                  <button onClick="{{ revokeDevice }}" style="width: 100%; margin-top: 16px; border: 1px solid oklch(0.82 0.06 60); background: transparent; color: oklch(0.46 0.12 55); font-family: inherit; font-size: 14.5px; font-weight: 600; padding: 14px; border-radius: 16px; cursor: pointer;">Unlink this tablet</button>
+                </sc-if>
+                <sc-if value="{{ deviceRevoked }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top: 16px; display: flex; flex-direction: column; gap: 12px;">
+                    <div style="background: oklch(0.96 0.035 180); border-radius: 16px; padding: 15px; text-align: center;">
+                      <div style="font-size: 12px; font-weight: 600; color: oklch(0.42 0.09 180);">One-time pairing code</div>
+                      <div style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 30px; letter-spacing: 6px; margin-top: 6px;">{{ pairCode }}</div>
+                      <div style="font-size: 11.5px; color: oklch(0.42 0.09 180); margin-top: 4px;">Expires in 10 minutes — usable once</div>
+                    </div>
+                    <button onClick="{{ pairDevice }}" style="border: none; background: oklch(0.28 0.02 60); color: oklch(0.98 0.008 85); font-family: inherit; font-size: 14.5px; font-weight: 600; padding: 14px; border-radius: 16px; cursor: pointer;">Simulate {{ childName }} entering the code</button>
+                  </div>
+                </sc-if>
+              </div>
+            </div>
+          </sc-if>
+
+        </div>
+      </x-import>
+
+      <div style="font-size: 12.5px; color: oklch(0.53 0.02 70); max-width: 400px; text-align: center; text-wrap: pretty;">Turn Wi-Fi off before confirming to see a record sit as <strong style="font-weight: 600;">Pending sync</strong> — the tablet keeps showing the last confirmed picture.</div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+      <div style="display: flex; align-items: baseline; gap: 10px;">
+        <span style="font-weight: 700; font-size: 15px;">{{ childName }}'s tablet</span>
+        <span style="font-size: 13px; color: oklch(0.53 0.02 70);">read-only</span>
+      </div>
+
+      <x-import component-from-global-scope="AndroidDevice" from="./android-frame.jsx" hint-size="428px,908px">
+        <div style="min-height: 100%; display: flex; flex-direction: column; background: radial-gradient(oklch(0.9 0.055 95) 1.6px, transparent 1.7px) 0 0 / 24px 24px, oklch(0.975 0.04 95); font-family: 'Nunito', system-ui, sans-serif; color: oklch(0.26 0.03 50);">
+
+          <sc-if value="{{ childPaired }}" hint-placeholder-val="{{ true }}">
+            <div style="flex: 1; display: flex; flex-direction: column;">
+              <div style="display: flex; align-items: center; gap: 13px; padding: 16px 18px 14px;">
+                <div style="width: 52px; height: 52px; border-radius: 18px; background: oklch(0.68 0.17 30); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 24px; box-shadow: 0 4px 0 oklch(0.56 0.16 30); transform: rotate(-4deg);">{{ childInitial }}</div>
+                <div style="flex: 1; min-width: 0;">
+                  <div style="font-weight: 800; font-size: 26px; letter-spacing: -0.5px;">Hi, {{ childName }}!</div>
+                  <div style="font-size: 13px; color: oklch(0.48 0.05 60); font-weight: 700;">Your jars, your story</div>
+                </div>
+                <button onClick="{{ toggleChildNet }}" style="border: 2px solid oklch(0.9 0.05 95); background: {{ cNetBg }}; color: {{ cNetFg }}; font-family: inherit; font-size: 12.5px; font-weight: 800; padding: 8px 12px; border-radius: 999px; cursor: pointer; white-space: nowrap;">{{ cNetLabel }}</button>
+              </div>
+
+              <sc-if value="{{ childOffline }}" hint-placeholder-val="{{ false }}">
+                <div style="margin: 0 18px 14px; background: oklch(0.96 0.05 90); border: 3px solid oklch(0.86 0.09 85); border-radius: 20px; padding: 13px 15px; font-size: 14px; color: oklch(0.44 0.11 70); font-weight: 800; line-height: 1.4;">No internet right now. This is the last picture we saved, from 9:24 this morning.</div>
+              </sc-if>
+
+              <sc-if value="{{ cIsHome }}" hint-placeholder-val="{{ true }}">
+                <div style="padding: 0 18px 20px; display: flex; flex-direction: column; gap: 16px;">
+                  <div style="background: oklch(0.68 0.17 30); border-radius: 30px; padding: 22px 22px 24px; color: #fff; box-shadow: 0 6px 0 oklch(0.56 0.16 30);">
+                    <div style="font-size: 14px; font-weight: 800; opacity: 0.9;">Everything you have</div>
+                    <div style="display: flex; align-items: baseline; gap: 9px; margin-top: 2px;">
+                      <span style="font-weight: 800; font-size: 76px; line-height: 1.05; letter-spacing: -2px;">{{ cBalance }}</span>
+                      <span style="font-size: 19px; font-weight: 800; opacity: 0.9;">{{ unitLabel }}</span>
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 18px;">
+                      <div style="flex: 1; background: oklch(0.99 0.02 95); color: oklch(0.26 0.03 50); border-radius: 22px; padding: 14px 15px 16px;">
+                        <div style="display: flex; align-items: flex-end; gap: 11px;">
+                          <div style="width: 44px;">
+                            <div style="height: 7px; margin: 0 6px 2px; border-radius: 4px; background: oklch(0.68 0.15 175);"></div>
+                            <div style="height: 58px; border-radius: 10px 10px 16px 16px; border: 3px solid oklch(0.68 0.15 175); background: oklch(0.96 0.04 180); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;">
+                              <div style="height: {{ savePct }}%; background: oklch(0.68 0.15 175);"></div>
+                            </div>
+                          </div>
+                          <div style="flex: 1;">
+                            <div style="font-size: 13.5px; font-weight: 800; color: oklch(0.42 0.09 180); white-space: nowrap;">Save Jar</div>
+                            <div style="font-weight: 800; font-size: 34px; line-height: 1.1;">{{ cSave }}</div>
+                          </div>
+                        </div>
+                        <div style="font-size: 12px; font-weight: 700; color: oklch(0.42 0.09 180); margin-top: 9px; line-height: 1.35;">{{ goalLine }}</div>
+                      </div>
+                      <div style="flex: 1; background: oklch(0.99 0.02 95); color: oklch(0.26 0.03 50); border-radius: 22px; padding: 14px 15px 16px;">
+                        <div style="display: flex; align-items: flex-end; gap: 11px;">
+                          <div style="width: 44px;">
+                            <div style="height: 7px; margin: 0 6px 2px; border-radius: 4px; background: oklch(0.72 0.16 75);"></div>
+                            <div style="height: 58px; border-radius: 10px 10px 16px 16px; border: 3px solid oklch(0.72 0.16 75); background: oklch(0.97 0.05 90); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;">
+                              <div style="height: {{ spendPct }}%; background: oklch(0.72 0.16 75);"></div>
+                            </div>
+                          </div>
+                          <div style="flex: 1;">
+                            <div style="font-size: 13.5px; font-weight: 800; color: oklch(0.48 0.11 70); white-space: nowrap;">Spend Jar</div>
+                            <div style="font-weight: 800; font-size: 34px; line-height: 1.1;">{{ cSpending }}</div>
+                          </div>
+                        </div>
+                        <div style="font-size: 12px; font-weight: 700; color: oklch(0.48 0.11 70); margin-top: 9px; line-height: 1.35;">Ready to use whenever</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="background: oklch(0.99 0.02 95); border: 3px dashed oklch(0.78 0.09 300); border-radius: 24px; padding: 16px 17px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                      <div style="flex: 1;">
+                        <div style="font-size: 14px; font-weight: 800; color: oklch(0.5 0.14 300);">Still to pay back</div>
+                        <div style="font-size: 12.5px; font-weight: 700; color: oklch(0.48 0.05 60); margin-top: 2px;">{{ owedLine }}</div>
+                      </div>
+                      <div style="font-weight: 800; font-size: 34px; color: oklch(0.5 0.14 300);">{{ cOwed }}</div>
+                    </div>
+                    <div style="height: 12px; border-radius: 999px; background: oklch(0.94 0.03 300); margin-top: 12px; overflow: hidden;">
+                      <div style="height: 100%; width: {{ owedPct }}%; border-radius: 999px; background: oklch(0.68 0.16 300);"></div>
+                    </div>
+                  </div>
+
+                  <div style="position: relative; background: oklch(0.99 0.02 95); border-radius: 26px; padding: 18px 19px; box-shadow: 0 4px 0 oklch(0.9 0.05 95);">
+                    <div style="display: inline-flex; align-items: center; gap: 7px; background: oklch(0.94 0.06 95); border-radius: 999px; padding: 6px 12px;">
+                      <span style="width: 9px; height: 9px; border-radius: 50%; background: oklch(0.68 0.17 30);"></span>
+                      <span style="font-size: 12px; font-weight: 800; color: oklch(0.42 0.08 60);">Newest news</span>
+                    </div>
+                    <div style="font-size: 19px; font-weight: 800; margin-top: 11px; line-height: 1.3; text-wrap: pretty;">{{ cLatestTitle }}</div>
+                    <div style="font-size: 15px; color: oklch(0.4 0.03 55); margin-top: 7px; line-height: 1.5; font-weight: 600; text-wrap: pretty;">{{ cLatestWhy }}</div>
+                  </div>
+
+                  <sc-if value="{{ showEduNudge }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ goLearn }}" style="text-align: left; border: none; background: oklch(0.68 0.15 175); color: #fff; border-radius: 26px; padding: 18px 20px; cursor: pointer; font-family: inherit; box-shadow: 0 6px 0 oklch(0.55 0.13 175); display: flex; align-items: center; gap: 14px;" style-hover="background: oklch(0.63 0.15 175);">
+                      <div style="width: 44px; height: 44px; border-radius: 15px; background: oklch(0.99 0.02 95); color: oklch(0.42 0.09 180); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; animation: ew-bob 2.6s ease-in-out infinite;">?</div>
+                      <div style="flex: 1;">
+                        <div style="font-size: 13px; font-weight: 800; opacity: 0.9;">New thing unlocked</div>
+                        <div style="font-size: 18px; font-weight: 800; margin-top: 2px; line-height: 1.25;">{{ eduNudgeTitle }}</div>
+                      </div>
+                    </button>
+                  </sc-if>
+
+                  <sc-if value="{{ askSent }}" hint-placeholder-val="{{ false }}">
+                    <div style="background: oklch(0.94 0.06 95); border-radius: 22px; padding: 16px 17px; font-size: 15px; font-weight: 800; color: oklch(0.42 0.08 60);">Sent! A grown-up will have a look.</div>
+                  </sc-if>
+                  <sc-if value="{{ askOpen }}" hint-placeholder-val="{{ true }}">
+                    <button onClick="{{ askReview }}" style="border: 3px solid oklch(0.85 0.06 95); background: transparent; color: oklch(0.4 0.05 60); font-family: inherit; font-size: 16px; font-weight: 800; padding: 16px; border-radius: 22px; cursor: pointer;" style-hover="background: oklch(0.97 0.04 95);">Hmm, that looks wrong — tell a grown-up</button>
+                  </sc-if>
+
+                  <div style="font-size: 12.5px; color: oklch(0.5 0.04 60); font-weight: 700; line-height: 1.45; text-wrap: pretty; text-align: center; padding: 0 6px;">These {{ unitLabel }} are for practising. They're not real money and they don't come out of a bank.</div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ cIsStory }}" hint-placeholder-val="{{ false }}">
+                <div style="padding: 0 18px 20px; display: flex; flex-direction: column; gap: 14px;">
+                  <div style="font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">Your story</div>
+                  <sc-for list="{{ childEvents }}" as="e" hint-placeholder-count="5">
+                    <div style="background: oklch(0.99 0.02 95); border-radius: 26px; padding: 17px 18px; box-shadow: 0 4px 0 oklch(0.9 0.05 95); display: flex; gap: 14px;">
+                      <div style="width: 46px; height: 46px; flex: none; border-radius: 16px; background: {{ e.tagBg }}; color: {{ e.tagFg }}; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800;">{{ e.glyph }}</div>
+                      <div style="flex: 1; min-width: 0;">
+                        <div style="display: flex; align-items: baseline; gap: 12px;">
+                          <div style="flex: 1; min-width: 0; font-size: 18px; font-weight: 800; line-height: 1.25;">{{ e.kidTitle }}</div>
+                          <div style="font-weight: 800; font-size: 20px; color: {{ e.amountColor }};">{{ e.amountText }}</div>
+                        </div>
+                        <div style="font-size: 14.5px; color: oklch(0.4 0.03 55); font-weight: 600; margin-top: 6px; line-height: 1.5; text-wrap: pretty;">{{ e.kidWhy }}</div>
+                        <div style="font-size: 12px; color: oklch(0.55 0.04 70); font-weight: 800; margin-top: 10px;">{{ e.when }}</div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ cIsLearn }}" hint-placeholder-val="{{ false }}">
+                <div style="padding: 0 18px 20px; display: flex; flex-direction: column; gap: 14px;">
+                  <div style="font-size: 26px; font-weight: 800; letter-spacing: -0.5px;">Money ideas</div>
+                  <div style="font-size: 14.5px; color: oklch(0.45 0.04 60); font-weight: 700; line-height: 1.45; text-wrap: pretty;">Each one pops open after it really happens to you.</div>
+                  <sc-for list="{{ eduCards }}" as="c" hint-placeholder-count="5">
+                    <div style="background: {{ c.bg }}; border: 3px {{ c.borderStyle }} {{ c.line }}; border-radius: 26px; padding: 17px 18px; display: flex; gap: 14px;">
+                      <div style="width: 42px; height: 42px; flex: none; border-radius: 14px; background: {{ c.tagBg }}; color: {{ c.tagFg }}; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800;">{{ c.num }}</div>
+                      <div style="flex: 1; min-width: 0;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                          <div style="font-size: 18px; font-weight: 800; flex: 1; color: {{ c.fg }}; line-height: 1.25;">{{ c.title }}</div>
+                          <span style="font-size: 11.5px; font-weight: 800; padding: 5px 10px; border-radius: 999px; background: {{ c.tagBg }}; color: {{ c.tagFg }}; white-space: nowrap;">{{ c.tag }}</span>
+                        </div>
+                        <div style="font-size: 14.5px; font-weight: 600; color: oklch(0.4 0.03 55); margin-top: 7px; line-height: 1.5; text-wrap: pretty;">{{ c.body }}</div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <div style="margin-top: auto; position: sticky; bottom: 0; display: flex; gap: 8px; padding: 12px 14px 16px; background: oklch(0.975 0.04 95); border-top: 3px solid oklch(0.92 0.05 95);">
+                <sc-for list="{{ childTabs }}" as="t" hint-placeholder-count="3">
+                  <button onClick="{{ t.onPick }}" style="flex: 1; border: none; background: {{ t.bg }}; color: {{ t.fg }}; font-family: inherit; font-size: 15px; font-weight: 800; padding: 15px 0; border-radius: 20px; cursor: pointer; min-height: 54px; box-shadow: {{ t.shadow }};">{{ t.label }}</button>
+                </sc-for>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ childRevoked }}" hint-placeholder-val="{{ false }}">
+            <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 16px; padding: 30px 26px 60px; text-align: center;">
+              <div style="width: 92px; height: 92px; border-radius: 30px; background: oklch(0.94 0.06 95); margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                <div style="width: 34px; height: 34px; border-radius: 12px; border: 5px solid oklch(0.72 0.16 75);"></div>
+              </div>
+              <div style="font-size: 27px; font-weight: 800; letter-spacing: -0.5px;">This tablet is unplugged</div>
+              <div style="font-size: 16px; font-weight: 700; color: oklch(0.42 0.04 60); line-height: 1.55; text-wrap: pretty;">Your {{ unitLabel }} are safe! This tablet just can't see them right now. Ask a grown-up for a new code and everything comes back.</div>
+              <div style="font-size: 13.5px; font-weight: 800; color: oklch(0.55 0.04 70);">The numbers saved here have been tidied away.</div>
+            </div>
+          </sc-if>
+
+        </div>
+      </x-import>
+
+      <div style="font-size: 12.5px; color: oklch(0.53 0.02 70); max-width: 400px; text-align: center; text-wrap: pretty;">No write controls exist here at all — not greyed out, just absent. Unlink the tablet from the parent phone to see the revoked state.</div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1060,&quot;height&quot;:1080},&quot;childName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Eddie&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;unitLabel&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;credits&quot;,&quot;points&quot;,&quot;stars&quot;],&quot;default&quot;:&quot;credits&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;goalName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;a skateboard&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Kid view&quot;},&quot;saveGoal&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:40,&quot;min&quot;:10,&quot;max&quot;:200,&quot;step&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Kid view&quot;},&quot;educationOn&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;startOffline&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;}}">
+const KINDS = {
+  allowance: { label: 'Allowance', pLabel: 'Allowance', kid: 'Allowance day' },
+  spend:     { label: 'Spending',  pLabel: 'Spending',  kid: 'You spent some' },
+  save:      { label: 'Save',      pLabel: 'Move to Save Jar', kid: 'Moved into your Save Jar' },
+  loan:      { label: 'Loan',      pLabel: 'Loan',      kid: 'You borrowed' },
+  repay:     { label: 'Repay',     pLabel: 'Loan repayment', kid: 'You paid some back' },
+  reward:    { label: 'Reward',    pLabel: 'Saving reward',  kid: 'Save Jar reward' },
+  reversal:  { label: 'Reversal',  pLabel: 'Reversal',  kid: 'A mistake was undone' },
+};
+
+const REASONS = ['Weekly allowance', 'Comic book', 'Skateboard fund', 'Helped with the shopping', 'Lego set'];
+
+const TANG = 'oklch(0.68 0.15 55)';
+const TEAL = 'oklch(0.68 0.15 175)';
+const INK = 'oklch(0.28 0.02 60)';
+const INK2 = 'oklch(0.53 0.02 70)';
+const LINE = 'oklch(0.89 0.012 80)';
+const SURF = 'oklch(0.99 0.004 85)';
+const TANG_S = 'oklch(0.96 0.035 70)';
+const TEAL_S = 'oklch(0.96 0.035 180)';
+
+function postings(kind, a) {
+  switch (kind) {
+    case 'allowance': return { spending: a, save: 0, owed: 0 };
+    case 'spend': return { spending: -a, save: 0, owed: 0 };
+    case 'save': return { spending: -a, save: a, owed: 0 };
+    case 'loan': return { spending: a, save: 0, owed: a };
+    case 'repay': return { spending: -a, save: 0, owed: -a };
+    case 'reward': return { spending: 0, save: a, owed: 0 };
+    default: return { spending: 0, save: 0, owed: 0 };
+  }
+}
+
+class Component extends DCLogic {
+  state = {
+    confirmed: { spending: 24, save: 15, owed: 6 },
+    events: [
+      { id: 'e5', kind: 'reward', amount: 1, reason: 'Well done for saving', when: 'Yesterday, 6:40pm', status: 'confirmed' },
+      { id: 'e4', kind: 'save', amount: 5, reason: 'Skateboard fund', when: 'Yesterday, 6:38pm', status: 'confirmed' },
+      { id: 'e3', kind: 'spend', amount: 3, reason: 'Comic book', when: 'Monday, 4:15pm', status: 'confirmed' },
+      { id: 'e2', kind: 'allowance', amount: 8, reason: 'Weekly allowance', when: 'Sunday, 9:00am', status: 'confirmed' },
+      { id: 'e1', kind: 'loan', amount: 6, reason: 'Lego set', when: 'Last Saturday', status: 'confirmed' },
+    ],
+    pending: [],
+    parentScreen: 'dashboard',
+    draft: { kind: 'allowance', amount: 8, reason: 'Weekly allowance' },
+    childTab: 'home',
+    childNetOff: false,
+    devicePaired: true,
+    askSent: false,
+    seq: 6,
+  };
+
+  componentWillUnmount() { if (this._t) clearTimeout(this._t); }
+
+  online() { return !(this.state.parentOffline ?? (this.props.startOffline ?? false)); }
+  unit() { return this.props.unitLabel ?? 'credits'; }
+  name() { return this.props.childName ?? 'Eddie'; }
+
+  jars(includePending) {
+    const j = Object.assign({}, this.state.confirmed);
+    if (includePending) this.state.pending.forEach(e => {
+      const p = postings(e.kind, e.amount);
+      j.spending += p.spending; j.save += p.save; j.owed += p.owed;
+    });
+    return j;
+  }
+
+  validate(kind, amount) {
+    const j = this.jars(true);
+    if (amount <= 0) return { code: 'AMOUNT_REQUIRED', text: 'Enter an amount above zero.' };
+    if ((kind === 'spend' || kind === 'save') && amount > j.spending)
+      return { code: 'INSUFFICIENT_SPENDING', text: 'The Spending Jar only holds ' + j.spending + ' ' + this.unit() + '. The server would refuse this record.' };
+    if (kind === 'repay' && amount > j.owed)
+      return { code: 'REPAYMENT_EXCEEDS_OWED', text: this.name() + ' only owes ' + j.owed + ' ' + this.unit() + '. Paying back more than that is not a valid record.' };
+    if (kind === 'repay' && amount > j.spending)
+      return { code: 'INSUFFICIENT_SPENDING', text: 'Repayment comes out of the Spending Jar, which holds ' + j.spending + ' ' + this.unit() + '.' };
+    return null;
+  }
+
+  setDraft(patch) { this.setState(s => ({ draft: Object.assign({}, s.draft, patch) })); }
+
+  commit = () => {
+    const d = this.state.draft;
+    if (this.validate(d.kind, d.amount)) return;
+    const id = 'p' + this.state.seq;
+    const ev = { id: id, kind: d.kind, amount: d.amount, reason: d.reason, when: 'Just now', status: 'pending' };
+    this.setState(s => ({ pending: s.pending.concat([ev]), seq: s.seq + 1, parentScreen: 'activity' }));
+    if (this.online()) this._t = setTimeout(() => this.accept(id), 1600);
+  };
+
+  accept(id) {
+    this.setState(s => {
+      const ev = s.pending.find(e => e.id === id);
+      if (!ev) return null;
+      const p = postings(ev.kind, ev.amount);
+      return {
+        confirmed: { spending: s.confirmed.spending + p.spending, save: s.confirmed.save + p.save, owed: s.confirmed.owed + p.owed },
+        events: [Object.assign({}, ev, { status: 'confirmed' })].concat(s.events),
+        pending: s.pending.filter(e => e.id !== id),
+      };
+    });
+  }
+
+  retrySync = () => {
+    if (!this.online()) { this.setState({ parentOffline: false }); }
+    const ids = this.state.pending.map(e => e.id);
+    ids.forEach((id, i) => setTimeout(() => this.accept(id), 500 + i * 350));
+  };
+
+  reverse(src) {
+    const id = 'r' + this.state.seq;
+    const inv = { allowance: 'spend', spend: 'allowance', save: 'unsave', loan: 'repay', repay: 'loan', reward: 'spend' };
+    const p = postings(src.kind, src.amount);
+    const ev = {
+      id: id, kind: 'reversal', amount: src.amount, reason: 'Undoes: ' + src.reason,
+      kidReason: 'the ' + KINDS[src.kind].kid.toLowerCase() + ' record from earlier',
+      when: 'Just now', status: 'pending', inverse: { spending: -p.spending, save: -p.save, owed: -p.owed },
+    };
+    this.setState(s => ({ pending: s.pending.concat([ev]), seq: s.seq + 1 }));
+    if (this.online()) setTimeout(() => this.acceptReversal(id), 1400);
+  }
+
+  acceptReversal(id) {
+    this.setState(s => {
+      const ev = s.pending.find(e => e.id === id);
+      if (!ev) return null;
+      return {
+        confirmed: { spending: s.confirmed.spending + ev.inverse.spending, save: s.confirmed.save + ev.inverse.save, owed: s.confirmed.owed + ev.inverse.owed },
+        events: [Object.assign({}, ev, { status: 'confirmed' })].concat(s.events),
+        pending: s.pending.filter(e => e.id !== id),
+      };
+    });
+  }
+
+  kidWhy(e) {
+    const u = this.unit(), n = e.amount;
+    switch (e.kind) {
+      case 'allowance': return 'Your allowance was added to the Spending Jar, so your total went up by ' + n + ' ' + u + '.';
+      case 'spend': return n + ' ' + u + ' left the Spending Jar for ' + e.reason.toLowerCase() + ', so your total went down.';
+      case 'save': return 'The same ' + n + ' ' + u + ' just changed jars — out of Spending, into Save. Your total is exactly the same.';
+      case 'loan': return 'A parent lent you ' + n + ' ' + u + '. You can spend them now, and the "you owe" number went up by ' + n + ' too.';
+      case 'repay': return 'You paid back ' + n + ' ' + u + '. Your Spending Jar went down and what you owe went down by the same amount.';
+      case 'reward': return 'A little extra for keeping ' + u + ' in the Save Jar. It went straight into Save, not Spending.';
+      case 'reversal': return 'A parent undid ' + (e.kidReason || 'an earlier record') + ' because it was a mistake. Both records stay here so you can see exactly what changed.';
+      default: return '';
+    }
+  }
+
+  renderVals() {
+    const s = this.state, u = this.unit(), name = this.name();
+    const pj = this.jars(true), cj = s.confirmed;
+    const d = s.draft;
+    const rej = this.validate(d.kind, d.amount);
+    const online = this.online();
+    const hasPending = s.pending.length > 0;
+    const confirmedEvents = s.events;
+    const kinds = Object.keys(KINDS).filter(k => k !== 'reversal').map(k => {
+      const sel = d.kind === k;
+      return {
+        id: k, label: KINDS[k].label, selected: sel,
+        bg: sel ? INK : SURF, fg: sel ? 'oklch(0.98 0.008 85)' : INK, line: sel ? INK : LINE,
+        onPick: () => this.setDraft({ kind: k }),
+      };
+    });
+    const after = postings(d.kind, d.amount);
+    const rows = [];
+    if (after.spending) rows.push({ label: 'Spending Jar', change: pj.spending + ' → ' + (pj.spending + after.spending) });
+    if (after.save) rows.push({ label: 'Save Jar', change: pj.save + ' → ' + (pj.save + after.save) });
+    if (after.owed) rows.push({ label: name + ' owes', change: pj.owed + ' → ' + (pj.owed + after.owed) });
+    rows.push({ label: 'Total balance', change: (pj.spending + pj.save) + ' → ' + (pj.spending + after.spending + pj.save + after.save) + ' ' + u });
+
+    const mapParent = e => {
+      const p = e.kind === 'reversal' ? e.inverse : postings(e.kind, e.amount);
+      const net = p.spending + p.save;
+      const pend = e.status === 'pending';
+      const newest = confirmedEvents[0];
+      return {
+        id: e.id, title: KINDS[e.kind].pLabel, sub: e.reason, when: e.when,
+        amountText: (net > 0 ? '+' : net < 0 ? '−' : '') + Math.abs(net || e.amount) + ' ' + u,
+        amountColor: net > 0 ? 'oklch(0.42 0.09 180)' : INK,
+        statusText: pend ? (online ? 'Pending sync' : 'Waiting — offline') : 'Confirmed · visible to ' + name,
+        chipBg: pend ? 'oklch(0.97 0.01 85)' : TEAL_S,
+        chipFg: pend ? INK2 : 'oklch(0.42 0.09 180)',
+        borderStyle: pend ? 'dashed' : 'solid',
+        borderColor: pend ? 'oklch(0.75 0.02 80)' : LINE,
+        canReverse: !pend && e.kind !== 'reversal' && newest && e.id === newest.id,
+        onReverse: () => this.reverse(e),
+      };
+    };
+
+    const eduHistory = {};
+    confirmedEvents.forEach(e => { eduHistory[e.kind] = true; });
+    const eduDefs = [
+      { k: 'balance', title: 'What a balance is', body: 'Your balance is everything you have right now, in both jars added together.', unlocked: true },
+      { k: 'save', title: 'Saving is not spending', body: 'Credits in the Save Jar are still yours. You just told them to wait for something bigger.', unlocked: !!eduHistory.save },
+      { k: 'reward', title: 'A reward for waiting', body: 'Sometimes a parent adds a little extra because you kept credits in the Save Jar. It is a thank-you, not a promise.', unlocked: !!eduHistory.reward },
+      { k: 'loan', title: 'Borrowing means owing', body: 'A loan makes your Spending Jar bigger and adds the same amount to what you owe. Nothing is free — it is waiting to be paid back.', unlocked: !!eduHistory.loan },
+      { k: 'repay', title: 'Paying it back', body: 'Every repayment takes credits out of Spending and takes the same amount off what you owe.', unlocked: !!eduHistory.repay },
+    ];
+    const eduOn = this.props.educationOn ?? true;
+    const eduTones = [
+      ['oklch(0.94 0.06 95)', 'oklch(0.45 0.11 70)'],
+      ['oklch(0.94 0.05 180)', 'oklch(0.42 0.09 180)'],
+      ['oklch(0.94 0.05 180)', 'oklch(0.42 0.09 180)'],
+      ['oklch(0.94 0.04 300)', 'oklch(0.5 0.14 300)'],
+      ['oklch(0.94 0.04 300)', 'oklch(0.5 0.14 300)'],
+    ];
+    const eduCards = eduDefs.map((c, i) => ({
+      num: c.unlocked ? '' + (i + 1) : '?',
+      title: c.unlocked ? c.title : 'Locked for now',
+      body: c.unlocked ? c.body : 'This one pops open when it happens to you.',
+      tag: c.unlocked ? 'Open' : 'Later',
+      bg: c.unlocked ? 'oklch(0.99 0.02 95)' : 'transparent',
+      line: c.unlocked ? 'oklch(0.94 0.04 95)' : 'oklch(0.88 0.05 95)',
+      borderStyle: c.unlocked ? 'solid' : 'dashed',
+      fg: 'oklch(0.26 0.03 50)',
+      tagBg: c.unlocked ? eduTones[i][0] : 'oklch(0.94 0.03 95)',
+      tagFg: c.unlocked ? eduTones[i][1] : 'oklch(0.5 0.04 70)',
+    }));
+    const latest = confirmedEvents[0];
+    const nudge = eduDefs.slice(1).reverse().find(c => c.unlocked && latest && c.k === latest.kind);
+
+    const tab = t => {
+      const on = s.childTab === t;
+      return {
+        label: t === 'home' ? 'Home' : t === 'story' ? 'Story' : 'Learn',
+        bg: on ? 'oklch(0.68 0.17 30)' : 'oklch(0.99 0.02 95)',
+        fg: on ? '#fff' : 'oklch(0.45 0.05 60)',
+        shadow: on ? '0 4px 0 oklch(0.56 0.16 30)' : '0 3px 0 oklch(0.92 0.05 95)',
+        onPick: () => this.setState({ childTab: t }),
+      };
+    };
+    const goalAmount = this.props.saveGoal ?? 40;
+    const goalName = this.props.goalName ?? 'a skateboard';
+    const pct = (n, d) => Math.max(0, Math.min(100, Math.round((n / (d || 1)) * 100)));
+    const startOwed = 6;
+    const GLYPHS = { allowance: '+', spend: '−', save: '↓', loan: '→', repay: '←', reward: '★', reversal: '↺' };
+    const TONE = {
+      allowance: ['oklch(0.94 0.06 95)', 'oklch(0.45 0.11 70)'],
+      spend: ['oklch(0.96 0.05 90)', 'oklch(0.48 0.11 70)'],
+      save: ['oklch(0.94 0.05 180)', 'oklch(0.42 0.09 180)'],
+      loan: ['oklch(0.94 0.04 300)', 'oklch(0.5 0.14 300)'],
+      repay: ['oklch(0.94 0.04 300)', 'oklch(0.5 0.14 300)'],
+      reward: ['oklch(0.94 0.05 180)', 'oklch(0.42 0.09 180)'],
+      reversal: ['oklch(0.95 0.02 85)', 'oklch(0.45 0.03 60)'],
+    };
+
+    return {
+      childName: name, childInitial: name.slice(0, 1).toUpperCase(), unitLabel: u,
+      pSpending: pj.spending, pSave: pj.save, pOwed: pj.owed, pBalance: pj.spending + pj.save,
+      cSpending: cj.spending, cSave: cj.save, cOwed: cj.owed, cBalance: cj.spending + cj.save,
+      eventCount: confirmedEvents.length,
+
+      pIsDash: s.parentScreen === 'dashboard', pIsRecord: s.parentScreen === 'record',
+      pIsConfirm: s.parentScreen === 'confirm', pIsActivity: s.parentScreen === 'activity',
+      pIsPair: s.parentScreen === 'pair',
+      goDash: () => this.setState({ parentScreen: 'dashboard' }),
+      goRecord: () => this.setState({ parentScreen: 'record' }),
+      goConfirm: () => { if (!rej) this.setState({ parentScreen: 'confirm' }); },
+      goActivity: () => this.setState({ parentScreen: 'activity' }),
+      goPair: () => this.setState({ parentScreen: 'pair' }),
+      goAllowance: () => this.setState({ parentScreen: 'record', draft: { kind: 'allowance', amount: 8, reason: 'Weekly allowance' } }),
+
+      netLabel: online ? 'Wi-Fi on' : 'Wi-Fi off',
+      netBg: online ? SURF : TANG_S,
+      netFg: online ? INK2 : 'oklch(0.46 0.12 55)',
+      toggleOnline: () => this.setState(st => ({ parentOffline: !(st.parentOffline ?? (this.props.startOffline ?? false)) })),
+
+      syncLabel: hasPending ? (online ? 'Pending sync' : 'Offline') : 'Confirmed',
+      syncBg: hasPending ? (online ? SURF : TANG_S) : TEAL_S,
+      syncFg: hasPending ? (online ? INK2 : 'oklch(0.46 0.12 55)') : 'oklch(0.42 0.09 180)',
+      syncBorder: hasPending && online ? 'dashed' : 'solid',
+      syncLine: hasPending && online ? 'oklch(0.75 0.02 80)' : 'transparent',
+
+      hasPending: hasPending,
+      pendingLabel: s.pending.length === 1 ? '1 record not confirmed yet' : s.pending.length + ' records not confirmed yet',
+      retryLabel: online ? 'Retry' : 'Go online',
+      retrySync: this.retrySync,
+
+      kinds: kinds,
+      draftAmount: d.amount, draftReason: d.reason, draftKindLabel: KINDS[d.kind].pLabel,
+      inc: () => this.setDraft({ amount: d.amount + 1 }),
+      dec: () => this.setDraft({ amount: Math.max(1, d.amount - 1) }),
+      amountChips: [1, 2, 5, 10].map(v => ({
+        label: '' + v, onPick: () => this.setDraft({ amount: v }),
+        bg: d.amount === v ? INK : SURF, fg: d.amount === v ? 'oklch(0.98 0.008 85)' : INK,
+        line: d.amount === v ? INK : LINE,
+      })),
+      reasonChips: REASONS.map(r => ({
+        label: r, onPick: () => this.setDraft({ reason: r }),
+        bg: d.reason === r ? INK : SURF, fg: d.reason === r ? 'oklch(0.98 0.008 85)' : INK,
+        line: d.reason === r ? INK : LINE,
+      })),
+      previewRows: rows,
+      hasReject: !!rej, rejectCode: rej ? rej.code : '', rejectText: rej ? rej.text : '',
+      confirmDisabled: !!rej, nextBg: rej ? 'oklch(0.78 0.02 80)' : TANG,
+      childPreviewLine: this.kidWhy(Object.assign({}, d)),
+      commit: this.commit,
+
+      parentEvents: s.pending.map(mapParent).concat(confirmedEvents.map(mapParent)),
+
+      devicePaired: s.devicePaired, deviceRevoked: !s.devicePaired,
+      deviceLine: s.devicePaired ? (s.childNetOff ? 'Paired · last read 9:24 this morning' : 'Paired · reading now') : 'Not linked · needs a new code',
+      pairCode: 'K7P-4RM',
+      revokeDevice: () => this.setState({ devicePaired: false }),
+      pairDevice: () => this.setState({ devicePaired: true, childTab: 'home' }),
+
+      childPaired: s.devicePaired, childRevoked: !s.devicePaired,
+      cIsHome: s.childTab === 'home', cIsStory: s.childTab === 'story', cIsLearn: s.childTab === 'learn',
+      childTabs: [tab('home'), tab('story'), tab('learn')],
+      goLearn: () => this.setState({ childTab: 'learn' }),
+      childOffline: s.childNetOff,
+      cNetLabel: s.childNetOff ? 'Offline' : 'Online',
+      cNetBg: s.childNetOff ? TANG_S : SURF,
+      cNetFg: s.childNetOff ? 'oklch(0.46 0.12 55)' : INK2,
+      toggleChildNet: () => this.setState(st => ({ childNetOff: !st.childNetOff })),
+
+      childEvents: confirmedEvents.map(e => {
+        const p = e.kind === 'reversal' ? e.inverse : postings(e.kind, e.amount);
+        const net = p.spending + p.save;
+        return {
+          kidTitle: KINDS[e.kind].kid, kidWhy: this.kidWhy(e), when: e.when,
+          amountText: (net > 0 ? '+' : net < 0 ? '−' : '') + Math.abs(net || e.amount),
+          amountColor: net > 0 ? 'oklch(0.42 0.09 180)' : net < 0 ? 'oklch(0.48 0.13 40)' : INK2,
+          glyph: GLYPHS[e.kind], tagBg: TONE[e.kind][0], tagFg: TONE[e.kind][1],
+        };
+      }),
+      savePct: pct(cj.save, goalAmount), spendPct: pct(cj.spending, 30),
+      owedPct: pct(Math.max(0, startOwed - cj.owed), startOwed),
+      goalLine: cj.save >= goalAmount ? 'Enough for ' + goalName + '!' : (goalAmount - cj.save) + ' more for ' + goalName,
+      owedLine: cj.owed > 0 ? 'You borrowed for a Lego set' : 'All paid back — nice one!',
+      cLatestTitle: latest ? (latest.kind === 'reversal' ? KINDS.reversal.kid : KINDS[latest.kind].kid + ' — ' + latest.reason) : 'Nothing yet',
+      cLatestWhy: latest ? this.kidWhy(latest) : 'When a parent records something, the story shows up here.',
+      showEduNudge: eduOn && !!nudge, eduNudgeTitle: nudge ? nudge.title : '',
+      eduCards: eduCards,
+
+      askOpen: !s.askSent, askSent: s.askSent,
+      askReview: () => this.setState({ askSent: true }),
+      clearAsk: () => this.setState({ askSent: false }),
+    };
+  }
+}
+
+</script>
+</body>
+</html>
