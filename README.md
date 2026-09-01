@@ -2,6 +2,35 @@
 
 **Authoritative v1 launch brief — requirements and product decisions**
 
+## Local backend slice (implemented)
+
+This repository now includes a small, dependency-free Python 3.11+ HTTP service for the synthetic local vertical slice. It is application implementation only: it creates no cloud account, OAuth client, VPS, production credential, or real family data.
+
+### Quickstart
+
+```bash
+python -m unittest discover -s tests -v
+python -m eddies_wallet serve --db .data/eddies-wallet.sqlite3 --reset
+```
+
+The service listens on `http://127.0.0.1:8080`. Check `GET /healthz` and `GET /readyz`. The default store is SQLite, explicitly a local development substitute for the approved PostgreSQL/small-API direction. It preserves the append-only event/posting model, transactional idempotency, integer units, family foreign keys, and child write triggers. The portable PostgreSQL boundary is captured in `migrations/001_initial.sql`; it is not applied by the local runner and still needs a PostgreSQL adapter plus concrete restricted API role/RLS tests before production.
+
+Local authentication is an explicit fixture adapter, not Google Sign-In. In local mode, obtain one of the synthetic sessions with `POST /v1/auth/fixture` and `{"identity":"parent-a"}`, `child-a`, `parent-b`, or `child-b`. Fixture tokens are public test values only. Setting `EDDIES_ENV=production` disables fixture authentication and synthetic seeding; the `GoogleTokenProvider` seam rejects requests until a later setup task implements signature, issuer, audience, expiry, nonce, and stable-subject verification.
+
+Implemented endpoints:
+
+- `GET /healthz`, `GET /readyz`, `GET /v1/capabilities` — service status and explicit feature gates.
+- `POST /v1/auth/fixture`, `GET /v1/me` — local identities and derived session scope.
+- `POST /v1/commands`, `GET /v1/commands/<command_id>` — parent-only `deposit`, `withdrawal`, `spending`, `save`, and immutable `reversal`; UUID command IDs are idempotency keys. The server derives postings and rejects duplicate payload mismatches.
+- `GET /v1/projection` — server-derived Spending Jar, Save Jar, owed, and held values; no currency code or client balance is accepted.
+- `GET /v1/sync?after=<position>&limit=<1..200>` — family/member-scoped cursor pull. Parents see their family; children see only their paired member.
+- `POST /v1/pairing-codes`, `POST /v1/pairing/redeem`, `GET /v1/devices`, `POST /v1/devices/<id>/revoke` — one-use, ten-minute opaque pairing secrets, scoped child sessions, revocation, and re-pairing.
+
+`loan_issue`, `loan_repayment`, `unsave`, `interest_reward`, and allowance automation are deliberately recorded as `FEATURE_GATED_POLICY` rejections because their captain-owned policies are unresolved for this slice. The service does not silently implement those rules. An accepted command is `confirmed`; a semantic rejection is `rejected`; a child revocation returns `revoked` and `clear_local_data`. `pending_local` and `offline` are client cache/outbox states, never server-confirmed ledger states; the capabilities response names them so a client can render them honestly. This backend has no client UI or outbox, and therefore never fabricates a pending/offline response.
+
+All test data is deterministic and synthetic (`family-a`/`family-b`, two parents, two Eddie profiles, and fixture devices). Tests cover family isolation, forged scope/roles, direct child DML rejection, immutable events, replay, server rejection, idempotency, pairing replay/expiry, revocation, re-pairing, and HTTP health/auth/sync. No external network is required.
+
+
 EddiesWallet is a family learning space for recording **virtual allowance credits**. A parent records what happened; a child reads an understandable explanation of the balance, jars, activity, and amount owed. It is **not** a bank account, payment product, card, custody service, or money-moving service.
 
 This README is the durable source of truth for implementation. It replaces the former prototype and draft PDR. It deliberately separates approved requirements, explicit boundaries, research recommendations, and decisions that are still owned by the captain. Do not turn a recommendation or a synthetic prototype value into an approved product rule without resolving it below.
