@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- A small dotted cream field, matching the 1e canvas direction. -->
+    <path android:fillColor="#E9DEB5" android:pathData="M12,16h4v4h-4zM40,16h4v4h-4zM68,16h4v4h-4zM96,16h4v4h-4zM12,44h4v4h-4zM96,44h4v4h-4zM12,72h4v4h-4zM96,72h4v4h-4zM12,100h4v4h-4zM40,100h4v4h-4zM68,100h4v4h-4zM96,100h4v4h-4z" />
+    <group android:rotation="-5" android:pivotX="54" android:pivotY="54">
+        <path android:fillColor="#C04637" android:pathData="M27,25h54a10,10 0,0 1,10 10v42a10,10 0,0 1,-10 10h-54a10,10 0,0 1,-10 -10v-42a10,10 0,0 1,10 -10z" />
+        <path android:fillColor="#EF6856" android:pathData="M27,21h54a10,10 0,0 1,10 10v42a10,10 0,0 1,-10 10h-54a10,10 0,0 1,-10 -10v-42a10,10 0,0 1,10 -10z" />
+        <!-- Block E keeps the mark legible inside the adaptive safe zone. -->
+        <path android:fillColor="#FFF7D9" android:pathData="M38,35h32v9h-21v7h18v9h-18v7h21v9h-32z" />
+    </group>
+</vector>

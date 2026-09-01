@@ -1,0 +1,14 @@
+# Android/Gradle build output
+.gradle/
+**/build/
+local.properties
+
+# Android Studio
+.idea/
+*.iml
+.externalNativeBuild/
+.cxx/
+
+# Machine-local secrets and signing material
+*.jks
+*.keystore

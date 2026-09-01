@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: oklch(0.955 0.016 80); }
+  a { color: oklch(0.55 0.13 55); text-decoration: none; }
+  a:hover { color: oklch(0.45 0.13 55); }
+  * { box-sizing: border-box; }
+</style>
+</helmet>
+
+<section style="padding: 40px 44px 60px; font-family: 'IBM Plex Sans', system-ui, sans-serif; color: oklch(0.28 0.02 60); background: oklch(0.955 0.016 80); min-height: 100%;">
+  <div style="max-width: 1120px; margin: 0 auto 30px;">
+    <div style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 32px; letter-spacing: -0.5px;">App icon — six directions</div>
+    <div style="font-size: 15px; color: oklch(0.53 0.02 70); margin-top: 5px; max-width: 620px; text-wrap: pretty;">Each one drawn on a 192px adaptive-icon square with a 48px launcher check underneath. Simple shapes only, so they survive the small size. Reply with an id.</div>
+  </div>
+
+  <div style="display: flex; flex-wrap: wrap; gap: 26px; max-width: 1120px; margin: 0 auto;">
+
+    <div id="1a" style="width: 340px; background: oklch(0.99 0.004 85); border: 1px solid oklch(0.89 0.012 80); border-radius: 22px; padding: 22px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; background: oklch(0.28 0.02 60); color: oklch(0.98 0.008 85); padding: 4px 9px; border-radius: 999px;">1a</span>
+        <span style="font-weight: 600; font-size: 15px;">The jar</span>
+      </div>
+      <div style="display: flex; align-items: flex-end; gap: 18px; margin-top: 18px;">
+        <div style="width: 192px; height: 192px; border-radius: 44px; background: oklch(0.68 0.17 30); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 30px; flex: none;">
+          <div style="width: 92px;">
+            <div style="height: 14px; margin: 0 14px 6px; border-radius: 7px; background: oklch(0.985 0.02 95);"></div>
+            <div style="height: 104px; border-radius: 20px 20px 32px 32px; border: 9px solid oklch(0.985 0.02 95); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;">
+              <div style="height: 52%; background: oklch(0.985 0.02 95);"></div>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 7px;">
+          <div style="width: 48px; height: 48px; border-radius: 11px; background: oklch(0.68 0.17 30); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 8px;">
+            <div style="width: 23px;">
+              <div style="height: 4px; margin: 0 4px 2px; border-radius: 2px; background: oklch(0.985 0.02 95);"></div>
+              <div style="height: 26px; border-radius: 5px 5px 8px 8px; border: 3px solid oklch(0.985 0.02 95); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;">
+                <div style="height: 52%; background: oklch(0.985 0.02 95);"></div>
+              </div>
+            </div>
+          </div>
+          <span style="font-size: 11px; color: oklch(0.6 0.02 75);">48px</span>
+        </div>
+      </div>
+      <div style="font-size: 13px; color: oklch(0.53 0.02 70); margin-top: 16px; line-height: 1.45; text-wrap: pretty;">The one object the whole app is about. Reads instantly, half-full so it feels alive.</div>
+    </div>
+
+    <div id="1b" style="width: 340px; background: oklch(0.99 0.004 85); border: 1px solid oklch(0.89 0.012 80); border-radius: 22px; padding: 22px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; background: oklch(0.28 0.02 60); color: oklch(0.98 0.008 85); padding: 4px 9px; border-radius: 999px;">1b</span>
+        <span style="font-weight: 600; font-size: 15px;">Two jars</span>
+      </div>
+      <div style="display: flex; align-items: flex-end; gap: 18px; margin-top: 18px;">
+        <div style="width: 192px; height: 192px; border-radius: 44px; background: oklch(0.68 0.15 175); display: flex; align-items: flex-end; justify-content: center; gap: 14px; padding-bottom: 38px; flex: none;">
+          <div style="width: 58px;">
+            <div style="height: 10px; margin: 0 9px 5px; border-radius: 5px; background: oklch(0.985 0.02 95);"></div>
+            <div style="height: 84px; border-radius: 14px 14px 22px 22px; background: oklch(0.985 0.02 95); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;">
+              <div style="height: 70%; background: oklch(0.83 0.13 90);"></div>
+            </div>
+          </div>
+          <div style="width: 58px;">
+            <div style="height: 10px; margin: 0 9px 5px; border-radius: 5px; background: oklch(0.985 0.02 95);"></div>
+            <div style="height: 62px; border-radius: 14px 14px 22px 22px; background: oklch(0.985 0.02 95); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;">
+              <div style="height: 34%; background: oklch(0.72 0.17 30);"></div>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 7px;">
+          <div style="width: 48px; height: 48px; border-radius: 11px; background: oklch(0.68 0.15 175); display: flex; align-items: flex-end; justify-content: center; gap: 4px; padding-bottom: 10px;">
+            <div style="width: 14px;">
+              <div style="height: 3px; margin: 0 2px 1px; border-radius: 2px; background: oklch(0.985 0.02 95);"></div>
+              <div style="height: 21px; border-radius: 4px 4px 6px 6px; background: oklch(0.985 0.02 95); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;">
+                <div style="height: 70%; background: oklch(0.83 0.13 90);"></div>
+              </div>
+            </div>
+            <div style="width: 14px;">
+              <div style="height: 3px; margin: 0 2px 1px; border-radius: 2px; background: oklch(0.985 0.02 95);"></div>
+              <div style="height: 16px; border-radius: 4px 4px 6px 6px; background: oklch(0.985 0.02 95); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden;">
+                <div style="height: 34%; background: oklch(0.72 0.17 30);"></div>
+              </div>
+            </div>
+          </div>
+          <span style="font-size: 11px; color: oklch(0.6 0.02 75);">48px</span>
+        </div>
+      </div>
+      <div style="font-size: 13px; color: oklch(0.53 0.02 70); margin-top: 16px; line-height: 1.45; text-wrap: pretty;">Save and Spend side by side — the core idea of the product, not just a wallet. Busier at 48px.</div>
+    </div>
+
+    <div id="1c" style="width: 340px; background: oklch(0.99 0.004 85); border: 1px solid oklch(0.89 0.012 80); border-radius: 22px; padding: 22px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; background: oklch(0.28 0.02 60); color: oklch(0.98 0.008 85); padding: 4px 9px; border-radius: 999px;">1c</span>
+        <span style="font-weight: 600; font-size: 15px;">Credit coin</span>
+      </div>
+      <div style="display: flex; align-items: flex-end; gap: 18px; margin-top: 18px;">
+        <div style="width: 192px; height: 192px; border-radius: 44px; background: oklch(0.87 0.14 90); display: flex; align-items: center; justify-content: center; flex: none;">
+          <div style="width: 118px; height: 118px; border-radius: 50%; background: oklch(0.985 0.02 95); border: 9px solid oklch(0.72 0.16 60); display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 62px; color: oklch(0.55 0.16 45);">E</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 7px;">
+          <div style="width: 48px; height: 48px; border-radius: 11px; background: oklch(0.87 0.14 90); display: flex; align-items: center; justify-content: center;">
+            <div style="width: 30px; height: 30px; border-radius: 50%; background: oklch(0.985 0.02 95); border: 3px solid oklch(0.72 0.16 60); display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 16px; color: oklch(0.55 0.16 45);">E</div>
+          </div>
+          <span style="font-size: 11px; color: oklch(0.6 0.02 75);">48px</span>
+        </div>
+      </div>
+      <div style="font-size: 13px; color: oklch(0.53 0.02 70); margin-top: 16px; line-height: 1.45; text-wrap: pretty;">A practice credit with Eddie's initial. Coin-like without pretending to be currency.</div>
+    </div>
+
+    <div id="1d" style="width: 340px; background: oklch(0.99 0.004 85); border: 1px solid oklch(0.89 0.012 80); border-radius: 22px; padding: 22px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; background: oklch(0.28 0.02 60); color: oklch(0.98 0.008 85); padding: 4px 9px; border-radius: 999px;">1d</span>
+        <span style="font-weight: 600; font-size: 15px;">Star saver</span>
+      </div>
+      <div style="display: flex; align-items: flex-end; gap: 18px; margin-top: 18px;">
+        <div style="width: 192px; height: 192px; border-radius: 44px; background: oklch(0.62 0.16 300); display: flex; align-items: center; justify-content: center; flex: none;">
+          <div style="width: 120px; height: 120px; border-radius: 36px; background: oklch(0.985 0.02 95); display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-size: 74px; line-height: 1; color: oklch(0.75 0.16 85);">★</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 7px;">
+          <div style="width: 48px; height: 48px; border-radius: 11px; background: oklch(0.62 0.16 300); display: flex; align-items: center; justify-content: center;">
+            <div style="width: 30px; height: 30px; border-radius: 9px; background: oklch(0.985 0.02 95); display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-size: 19px; line-height: 1; color: oklch(0.75 0.16 85);">★</div>
+          </div>
+          <span style="font-size: 11px; color: oklch(0.6 0.02 75);">48px</span>
+        </div>
+      </div>
+      <div style="font-size: 13px; color: oklch(0.53 0.02 70); margin-top: 16px; line-height: 1.45; text-wrap: pretty;">Reward-forward and very kid-legible. Risk: a star reads as ratings or favourites, not money.</div>
+    </div>
+
+    <div id="1e" style="width: 340px; background: oklch(0.99 0.004 85); border: 2px solid oklch(0.68 0.17 30); border-radius: 22px; padding: 22px; box-shadow: 0 6px 0 oklch(0.94 0.04 60);">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; background: oklch(0.68 0.17 30); color: oklch(0.99 0.02 95); padding: 4px 9px; border-radius: 999px;">1e</span>
+        <span style="font-weight: 600; font-size: 15px;">Big friendly E</span>
+        <span style="margin-left: auto; font-size: 11.5px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: oklch(0.5 0.14 30);">Approved</span>
+      </div>
+      <div style="display: flex; align-items: flex-end; gap: 18px; margin-top: 18px;">
+        <div style="width: 192px; height: 192px; border-radius: 44px; background: radial-gradient(oklch(0.9 0.055 95) 4px, transparent 4.5px) 0 0 / 30px 30px, oklch(0.975 0.04 95); display: flex; align-items: center; justify-content: center; flex: none;">
+          <div style="width: 128px; height: 128px; border-radius: 40px; background: oklch(0.68 0.17 30); box-shadow: 0 8px 0 oklch(0.56 0.16 30); display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 76px; color: oklch(0.985 0.02 95); transform: rotate(-5deg);">E</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 7px;">
+          <div style="width: 48px; height: 48px; border-radius: 11px; background: oklch(0.975 0.04 95); display: flex; align-items: center; justify-content: center;">
+            <div style="width: 32px; height: 32px; border-radius: 10px; background: oklch(0.68 0.17 30); display: flex; align-items: center; justify-content: center; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 19px; color: oklch(0.985 0.02 95); transform: rotate(-5deg);">E</div>
+          </div>
+          <span style="font-size: 11px; color: oklch(0.6 0.02 75);">48px</span>
+        </div>
+      </div>
+      <div style="font-size: 13px; color: oklch(0.53 0.02 70); margin-top: 16px; line-height: 1.45; text-wrap: pretty;">Pure personality — it's Eddie's. Scales perfectly, but says nothing about money on its own.</div>
+    </div>
+
+    <div id="1f" style="width: 340px; background: oklch(0.99 0.004 85); border: 1px solid oklch(0.89 0.012 80); border-radius: 22px; padding: 22px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 13px; background: oklch(0.28 0.02 60); color: oklch(0.98 0.008 85); padding: 4px 9px; border-radius: 999px;">1f</span>
+        <span style="font-weight: 600; font-size: 15px;">Growing stack</span>
+      </div>
+      <div style="display: flex; align-items: flex-end; gap: 18px; margin-top: 18px;">
+        <div style="width: 192px; height: 192px; border-radius: 44px; background: oklch(0.985 0.02 95); border: 8px solid oklch(0.68 0.15 175); display: flex; align-items: flex-end; justify-content: center; gap: 12px; padding-bottom: 38px; flex: none;">
+          <div style="width: 30px; height: 42px; border-radius: 10px; background: oklch(0.87 0.14 90);"></div>
+          <div style="width: 30px; height: 72px; border-radius: 10px; background: oklch(0.72 0.17 30);"></div>
+          <div style="width: 30px; height: 104px; border-radius: 10px; background: oklch(0.68 0.15 175);"></div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 7px;">
+          <div style="width: 48px; height: 48px; border-radius: 11px; background: oklch(0.985 0.02 95); border: 2px solid oklch(0.68 0.15 175); display: flex; align-items: flex-end; justify-content: center; gap: 3px; padding-bottom: 9px;">
+            <div style="width: 8px; height: 11px; border-radius: 3px; background: oklch(0.87 0.14 90);"></div>
+            <div style="width: 8px; height: 18px; border-radius: 3px; background: oklch(0.72 0.17 30);"></div>
+            <div style="width: 8px; height: 26px; border-radius: 3px; background: oklch(0.68 0.15 175);"></div>
+          </div>
+          <span style="font-size: 11px; color: oklch(0.6 0.02 75);">48px</span>
+        </div>
+      </div>
+      <div style="font-size: 13px; color: oklch(0.53 0.02 70); margin-top: 16px; line-height: 1.45; text-wrap: pretty;">Growth over time, which is the lesson. Most abstract of the six and the least kid-warm.</div>
+    </div>
+  </div>
+
+  <div style="max-width: 1120px; margin: 34px auto 0; padding: 20px 22px; background: oklch(0.99 0.004 85); border: 1px solid oklch(0.89 0.012 80); border-radius: 20px; font-size: 13.5px; color: oklch(0.53 0.02 70); line-height: 1.5; text-wrap: pretty;"><strong style="color: oklch(0.28 0.02 60); font-weight: 600;">Chosen: <a href="#1e">1e</a>, big friendly E.</strong> Coral tile on the dotted cream background, tilted 5°, Nunito 800. It already matches the avatar tile in Eddie's view, so the launcher and the app open with the same mark. For Android adaptive icons the E sits in the safe centre circle and the dotted cream becomes the background layer.</div>
+</section>
+
+</x-dc>
+</body>
+</html>
