@@ -1,0 +1,13 @@
+[build-system]
+requires = []
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eddies-wallet-local"
+version = "0.1.0"
+description = "Local synthetic backend vertical slice for EddiesWallet"
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.unittest]
+# The test suite uses only the Python standard library.
